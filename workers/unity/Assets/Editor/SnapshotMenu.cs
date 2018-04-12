@@ -22,6 +22,7 @@ namespace Assets.Editor
             PopulateSnapshotWithIslandTerrainEntities(ref snapshotEntities, ref currentEntityId);
             PopulateSnapshotWithSmallFishGroups(ref snapshotEntities, ref currentEntityId);
             PopulateSnapshotWithLargeFish(ref snapshotEntities, ref currentEntityId);
+            PopulateSnapshotWithPirateEntities(ref snapshotEntities, ref currentEntityId);
 
             SaveSnapshot(snapshotEntities);
         }
@@ -29,7 +30,7 @@ namespace Assets.Editor
         // Create and island entity for each island prefab at its given world coordinates
         public static void PopulateSnapshotWithIslandTerrainEntities(ref Dictionary<EntityId, Entity> snapshotEntities, ref int nextAvailableId)
         {
-            foreach(var item in SimulationSettings.IslandsEntityPlacements)
+            foreach (var item in SimulationSettings.IslandsEntityPlacements)
             {
                 snapshotEntities.Add(new EntityId(nextAvailableId++),
                     EntityTemplateFactory.GenerateIslandEntityTemplate(item.Value, item.Key));
@@ -70,13 +71,27 @@ namespace Assets.Editor
                 {
                     var error = stream.WriteEntity(kvp.Key, kvp.Value);
                     if (error.HasValue)
-                        {
-                            Debug.LogErrorFormat("Failed to generate initial world snapshot: {0}", error.Value);
-                            return;
-                        }
+                    {
+                        Debug.LogErrorFormat("Failed to generate initial world snapshot: {0}", error.Value);
+                        return;
+                    }
                 }
             }
-                Debug.LogFormat("Successfully generated initial world snapshot at {0}", snapshotPath);
+            Debug.LogFormat("Successfully generated initial world snapshot at {0}", snapshotPath);
+        }
+
+        public static void PopulateSnapshotWithPirateEntities(ref Dictionary<EntityId, Entity> snapshotEntities, ref int nextAvailableId)
+        {
+            for (var i = 0; i < SimulationSettings.TotalPirates; i++)
+            {
+                // Choose a starting position for this pirate entity
+                var pirateCoordinates = new Vector3((Random.value - 0.5f) * SimulationSettings.PiratesSpawnDiameter, 0,
+                    (Random.value - 0.5f) * SimulationSettings.PiratesSpawnDiameter);
+                var pirateRotation = System.Convert.ToUInt32(Random.value * 360);
+
+                snapshotEntities.Add(new EntityId(nextAvailableId++),
+                    EntityTemplateFactory.CreatePirateEntityTemplate(pirateCoordinates, pirateRotation));
+            }
         }
     }
 }

@@ -35,21 +35,12 @@ namespace Assets.Gamelogic.Pirates.Behaviours
 
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                // Port broadside (Fire the left cannons)
-                if (cannonFirer != null)
-                {
-                    cannonFirer.AttemptToFireCannons(-transform.right);
-                }
+                ShipControlsWriter.Send(new ShipControls.Update().AddFireLeft(new FireLeft()));
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                // Starboard broadside (Fire the right cannons)
-                if (cannonFirer != null)
-                {
-                    cannonFirer.AttemptToFireCannons(transform.right);
-                }
-
+                ShipControlsWriter.Send(new ShipControls.Update().AddFireRight(new FireRight()));
             }
         }
     }

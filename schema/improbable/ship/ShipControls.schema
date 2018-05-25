@@ -1,5 +1,9 @@
 package improbable.ship;
 
+	
+type FireLeft {}
+type FireRight {}
+
 component ShipControls {
     // Component ID, unique within the project
     id = 1000;
@@ -8,4 +12,8 @@ component ShipControls {
     float target_speed = 1;
     // The direction the ship wants to be steering in
     float target_steering = 2;
+
+      event FireLeft fire_left;
+  // The component event for triggering firing cannonballs right.
+  event FireRight fire_right;
 }
